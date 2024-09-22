@@ -1,6 +1,6 @@
 // Import the Express framework for creating the server
 const express = require('express');
-
+const serverless = require('serverless-http');
 // Import Mongoose to interact with MongoDB
 const mongoose = require('mongoose');
 
@@ -28,12 +28,15 @@ mongoose.connect(process.env.MONGOURI, {
 .catch((err) => console.error('MongoDB connection error:', err)); // Log an error message if the connection fails
 
 // Define a route for user-related APIs, which are handled by userRoutes
-app.use('/api/', require('./app/routes/userRoutes'));
+// app.use('/api/', require('./app/routes/userRoutes'));
+app.use('/.netlify/functions/api', require('../app/routes/userRoutes'));
 
 // Define a route for blog post-related APIs, handled by blogPostRoutes
-app.use('/api/posts', require('./app/routes/blogPostRoutes'));
+// app.use('/api/posts', require('./app/routes/blogPostRoutes'));
+app.use('/.netlify/functions/api/posts', require('../app/routes/blogPostRoutes'));
 
 // Start the server and listen on the specified port, logging a message when it starts
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
+module.exports.handler = serverless(app);
